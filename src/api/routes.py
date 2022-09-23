@@ -10,6 +10,7 @@ api = Blueprint('api', __name__)
 
 
 @api.route('/login', methods=['POST'])
+@jwt_required()
 def login():
 
     mail = request.json.get("email", None)
@@ -22,7 +23,9 @@ def login():
 
 
 @api.route('/sigup', methods=['GET'])
+@jwt_required()
 def get_sigup():
+
     data = request.json()
     user = User.query.filter_by(email=data.get("email")).first()
     if data["email"] not in data or data["password"] not in data:
@@ -42,9 +45,19 @@ def get_sigup():
     return jsonify(new_user.serialize())
 
 
+@api.route('/products', methods=['GET'])
+@jwt_required()
+def get_products():
+    products = Product.query.all()
+    serializer = list(map(lambda x: x.serialize(), products))
+    return jsonify({"data": serializer}), 200
+
+
 @api.route('/addfavorite', methods=['POST'])
 @jwt_required()
 def add_favorite():
+    current_user_id = get_jwt_identity()
+
     data = request.get_json()
     user = User.query.get(data["user_id"])
     if user is None:
@@ -54,4 +67,30 @@ def add_favorite():
         return jsonify({"message": "El producto no existe"}), 400
     user.favorites.append(product)
     db.session.commit()
+    return jsonify({"message": "El producto se añadio correctamente"}), 200
+
+
+@api.route('/addtocard', methods=['POST'])
+@jwt_required()
+def add_tocard():
+    current_user_id = get_jwt_identity()  # que es esto ?protected?
+
+    data = request.get_json()
+    user = User.query.get(data["user_id"])
+    product = Product.query.get(data["product_id"])
+    amount = request.json.get("amount", None)
+    product_id = request.json.get("product_id", None)
+
+    if amout is None or product_id is None:
+        return jsonify({"msg": "datos invalidos"})
+    cart = Cart(
+        user_id=user.id,
+        product_id=product.id,
+        amount=amount,
+        product_name=product.name
+
+    )
+    db.add(cart)
+    db.sesion.commit()
+
     return jsonify({"message": "El producto se añadio correctamente"}), 200
