@@ -5,18 +5,18 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Product, Cart, favorite
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
-from flask_jwt_extended import JWTManager
+
 api = Blueprint('api', __name__)
 
 
 @api.route('/login', methods=['POST'])
 def login():
 
-    mail = request.json.get("email", None)
+    email = request.json.get("email", None)
     password = request.json.get("password", None)
     user = User.query.filter_by(email=email, password=password).first
     if user is None:
-        return jsonify({"msg": "Error en las credenciales"})
+        return jsonify({"msg": "Error en las credenciales"}), 401
     access_token = create_access_token(identity=user.id)
     return ({"token": access_token, "user_id": user.id}), 200
 
@@ -30,7 +30,7 @@ def get_sigup():
         return jsonify({"msg": "faltan datos"}), 400
 
     if user is not None:
-        return jsonify({"msg": "el usuario ya existe"})
+        return jsonify({"msg": "el usuario ya existe"}), 400
 
     new_user = User(
         email=data.get("email"),
@@ -44,7 +44,6 @@ def get_sigup():
 
 
 @api.route('/products', methods=['GET'])
-@jwt_required()
 def get_products():
     products = Product.query.all()
     serializer = list(map(lambda x: x.serialize(), products))
@@ -52,7 +51,6 @@ def get_products():
 
 
 @api.route('/addfavorite', methods=['POST'])
-@jwt_required()
 def add_favorite():
     current_user_id = get_jwt_identity()
 
@@ -69,7 +67,6 @@ def add_favorite():
 
 
 @api.route('/addtocard', methods=['POST'])
-@jwt_required()
 def add_tocard():
     current_user_id = get_jwt_identity()  # que es esto ?protected?
 

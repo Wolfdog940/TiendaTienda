@@ -9,9 +9,9 @@ export const Navbar = () => {
 
   return (
     <nav className="navbar navbar-light bg-light">
-      <div class="dropdown">
+      <div className="dropdown">
         <button
-          class="btn btn-secondary dropdown-toggle"
+          className="btn btn-secondary dropdown-toggle"
           type="button"
           id="dropdownMenuButton1"
           data-bs-toggle="dropdown"
@@ -19,11 +19,14 @@ export const Navbar = () => {
         >
           carrito
         </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"></ul>
+        <ul
+          className="dropdown-menu"
+          aria-labelledby="dropdownMenuButton1"
+        ></ul>
       </div>
-      <div class="dropdown">
+      <div className="dropdown">
         <button
-          class="btn btn-secondary dropdown-toggle"
+          className="btn btn-secondary dropdown-toggle"
           type="button"
           id="dropdownMenuButton1"
           data-bs-toggle="dropdown"
@@ -31,7 +34,6 @@ export const Navbar = () => {
         >
           favoritos
         </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"></ul>
       </div>
     </nav>
   );
