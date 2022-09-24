@@ -2,15 +2,14 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
+from api.models import db, User, Product, Cart, favorite
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
-
+from flask_jwt_extended import JWTManager
 api = Blueprint('api', __name__)
 
 
 @api.route('/login', methods=['POST'])
-@jwt_required()
 def login():
 
     mail = request.json.get("email", None)
@@ -22,8 +21,7 @@ def login():
     return ({"token": access_token, "user_id": user.id}), 200
 
 
-@api.route('/sigup', methods=['GET'])
-@jwt_required()
+@api.route('/sigup', methods=['POST'])
 def get_sigup():
 
     data = request.json()
