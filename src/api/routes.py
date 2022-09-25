@@ -4,7 +4,8 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Product, Cart, favorite
 from api.utils import generate_sitemap, APIException
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt, JWTManager
+
 
 api = Blueprint('api', __name__)
 
@@ -48,22 +49,6 @@ def get_products():
     products = Product.query.all()
     serializer = list(map(lambda x: x.serialize(), products))
     return jsonify({"data": serializer}), 200
-
-
-@api.route('/addfavorite', methods=['POST'])
-def add_favorite():
-    current_user_id = get_jwt_identity()
-
-    data = request.get_json()
-    user = User.query.get(data["user_id"])
-    if user is None:
-        return jsonify({"message": "El usuario no existe"}), 400
-    product = Product.query.get(data["product_id"])
-    if product is None:
-        return jsonify({"message": "El producto no existe"}), 400
-    user.favorites.append(product)
-    db.session.commit()
-    return jsonify({"message": "El producto se añadio correctamente"}), 200
 
 
 @api.route('/addtocard', methods=['POST'])

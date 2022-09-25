@@ -23,8 +23,9 @@ const getState = ({ getStore, getActions, setStore }) => {
         fetch(process.env.BACKEND_URL + "/api/products")
           .then((response) => response.json())
           .then((data) =>
-            setStore({ productList: [...store.productList, data.data] })
+            setStore({ listaProductos: [...store.listaProductos, data.data] })
           )
+
           .catch((err) => console.error(err));
       },
 

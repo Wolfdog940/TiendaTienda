@@ -26,7 +26,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            "favorites": liist(map(lambda favorite: favorite.serialize(), self.favorites))
+            "favorites": list(map(lambda favorite: favorite.serialize(), self.favorites))
 
 
         }
@@ -39,7 +39,7 @@ class Product (db.Model):
     description = db.Column(db.String(240), unique=False, nullable=False)
     price = db.Column(db.Integer, unique=False, nullable=False)
     category = db.Column(db.String, unique=False, nullable=True)
-    stock = db.Column(db.String, unique=False, nullable=False)
+    stock = db.Column(db.String, unique=False, nullable=True)
     carts = db.relationship('Cart', backref='product', lazy=True)
 
     def serialize(self):
