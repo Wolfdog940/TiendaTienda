@@ -2,6 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
       listaProductos: [],
+      carro: [],
 
       message: null,
       demo: [
@@ -23,10 +24,28 @@ const getState = ({ getStore, getActions, setStore }) => {
         fetch(process.env.BACKEND_URL + "/api/products")
           .then((response) => response.json())
           .then((data) =>
-            setStore({ listaProductos: [...store.listaProductos, data.data] })
+            setStore({
+              listaProductos: [...store.listaProductos, data.result],
+            })
           )
 
           .catch((err) => console.error(err));
+      },
+
+      postCarro: async (productId) => {
+        const store = getStore();
+
+        const response = await fetch(
+          process.env.BACKEND_URL + "/api/addtocard",
+          {
+            method: ["POST"],
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ productId: productId }),
+          }
+        );
+
+        // setStore({ carro: [...store.carro, item] });
+        //console.log(store.carro);
       },
 
       // Use getActions to call a function within a fuction
