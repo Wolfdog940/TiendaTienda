@@ -18,6 +18,7 @@ class User(db.Model):
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
     favorites = db.relationship('Product', secondary=favorite, lazy='subquery',
                                 backref=db.backref('users', lazy=True))
+    carts = db.relationship('Cart', backref='user', lazy=True)
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -37,7 +38,7 @@ class Product (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=False, nullable=False)
     description = db.Column(db.String(240), unique=False, nullable=False)
-    price= db.Column(db.Integer, unique=False, nullable=False)
+    price = db.Column(db.Integer, unique=False, nullable=False)
     category = db.Column(db.String, unique=False, nullable=True)
     stock = db.Column(db.String, unique=False, nullable=True)
     carts = db.relationship('Cart', backref='product', lazy=True)
