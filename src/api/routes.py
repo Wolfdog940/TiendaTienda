@@ -32,26 +32,23 @@ def login():
     return ({"token": access_token, "user_id": user.id}), 200
 
 
-@api.route('/sigup', methods=['POST'])
-def get_sigup():
+@api.route('/singup', methods=['POST'])
+def post_sigup():
 
-    data = request.json()
-    user = User.query.filter_by(email=data.get("email")).first()
-    if data["email"] not in data or data["password"] not in data:
-        return jsonify({"msg": "faltan datos"}), 400
+    valores = request.get_json()
+    password = valores.get('password', None)
+    email = valores.get('email', None)
+    usuario = User.query.filter_by(email=valores.get(
+        'email')).first()  # pregunta a base de datos
+    if usuario is not None:
+        return 'El usuario ya existe', 404
 
-    if user is not None:
-        return jsonify({"msg": "el usuario ya existe"}), 400
+    new_user = User(email=email,
+                    password=password, is_active=True)
 
-    new_user = User(
-        email=data.get("email"),
-        password=data.get("password"),
-        is_active=True,
-    )
-
-    db.sesion.add(new_user)
-    db.sesion.commit()
-    return jsonify(new_user.serialize())
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify(new_user.serialize()), 200
 
 
 @api.route('/products', methods=['GET'])

@@ -1,34 +1,62 @@
 import React from "react";
+import { useState, useContext } from "react";
+import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
 
 const SingUp = () => {
+  const { store, actions } = useContext(Context);
+  const [valores, setValores] = useState({});
+
+  const handleInputChange = (event) => {
+    setValores({
+      ...valores,
+      [event.target.type]: event.target.value,
+    });
+  };
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log(valores);
+    actions.registro(valores);
+  }
+
   return (
-    <div>
-      <h1>Sing up</h1>{" "}
-      <div className="form-floating mb-3">
-        <input
-          type="email"
-          className="form-control"
-          id="floatingInput"
-          placeholder="name@example.com"
-        />
-        <label htmlFor="floatingInput">Correo electrónico</label>
-      </div>
-      <div className="form-floating">
-        <input
-          type="password"
-          className="form-control"
-          id="floatingPassword"
-          placeholder="Contraseña"
-        />
-        <label htmlFor="floatingPassword">Contraseña</label>
-      </div>
-      <Link to="/">
+    <div className="d-flex justify-content-center">
+      <p>Registro de Usuario</p>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="exampleInputEmail1" className="form-label">
+            Correo electrónico
+          </label>
+          <input
+            onChange={handleInputChange}
+            type="email"
+            className="form-control"
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+            placeholder="email"
+          />
+          <div id="emailHelp" className="form-text">
+            Nunca compartiremos su correo electrónico con nadie más.
+          </div>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="exampleInputPassword1" className="form-label">
+            Contraseña
+          </label>
+          <input
+            onChange={handleInputChange}
+            type="password"
+            className="form-control"
+            id="exampleInputPassword1"
+            placeholder="password"
+          />
+        </div>
+
         <button type="submit" className="btn btn-primary">
-          Registrate
+          Enviar
         </button>
-      </Link>
-      <Link to="/">si ya estas registrado pincha aqui</Link>
+      </form>
     </div>
   );
 };

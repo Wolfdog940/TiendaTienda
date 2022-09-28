@@ -47,6 +47,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 
           .catch((err) => console.log(err));
       },
+      registro: (valores) => {
+        fetch(process.env.BACKEND_URL + "/api/singup", {
+          method: "POST",
+          body: JSON.stringify(valores),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((resp) => {
+          console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
+          console.log(resp.status); // el código de estado = 200 o código = 400 etc.
+
+          return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
+        });
+      },
 
       getListProducts: () => {
         const store = getStore();
