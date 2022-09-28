@@ -3,6 +3,7 @@ const getState = ({ getStore, getActions, setStore }) => {
     store: {
       listaProductos: [],
       carro: [],
+      token: null,
 
       message: null,
       demo: [
@@ -19,17 +20,45 @@ const getState = ({ getStore, getActions, setStore }) => {
       ],
     },
     actions: {
+      login: (valores) => {
+        const store = getStore();
+        fetch(process.env.BACKEND_URL + "/api/login", {
+          method: "POST",
+          body: JSON.stringify(valores),
+          headers: {
+            "content-type": "application/json",
+          },
+        })
+          .then((resp) => {
+            if (resp.status == 401) {
+              console.log(resp.ok);
+              console.log(resp.status);
+            }
+
+            return resp.json();
+          })
+          .then((data) => {
+            if (!data.msg) {
+              setStore({ token: data.token });
+              sessionStorage.setItem("token", data.token);
+              console.log(store.token);
+            } else console.log(data.msg);
+          })
+
+          .catch((err) => console.log(err));
+      },
+
       getListProducts: () => {
         const store = getStore();
         fetch(process.env.BACKEND_URL + "/api/products")
           .then((response) => response.json())
           .then((data) =>
             setStore({
-              listaProductos: [...store.listaProductos, data.result],
+              listaProductos: [...store.listaProductos, data.data],
             })
           )
 
-          .catch((err) => console.error(err));
+          .catch((err) => console.log(err));
       },
 
       postCarro: async (productId) => {

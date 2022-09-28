@@ -8,6 +8,7 @@ export const Home = (props) => {
 
   useEffect(() => {
     actions.getListProducts();
+    console.log(store.listaProductos);
   }, []);
 
   return (
@@ -76,7 +77,7 @@ export const Home = (props) => {
                   </tr>
                 );
               })
-            : null}
+            : console.log("no se")}
         </tbody>
       </table>
       <h1>Cesta</h1>

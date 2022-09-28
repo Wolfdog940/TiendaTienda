@@ -4,9 +4,6 @@ import { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 
 export const Navbar = () => {
-  const { store, actions } = useContext(Context);
-  const [carro, setCarro] = useState([]);
-
   return (
     <nav className="navbar navbar-light bg-light">
       <div className="dropdown">
